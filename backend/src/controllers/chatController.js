@@ -1,19 +1,17 @@
 import { StatusCodes } from "http-status-codes";
-import Chat from "../models/Chat.model";
+import Chat from "../models/Chat.model.js";
 
 const createChat = async (req, res) => {
     try {
-        const { firstName, lastName } = req.body;
-        if (!firstName?.trim() || !lastName?.trim()) {
-          return res
-            .status(StatusCodes.BAD_REQUEST)
-            .json({
-              error: true,
-              message: "firstName and lastName are required.",
-            });
+        const { firstName, lastName, userId } = req.body;
+        if (!firstName?.trim() || !lastName?.trim() || !userId?.trim()) {
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            error: true,
+            message: "firstName and lastName are required.",
+          });
         }
 
-        const newChat = await Chat.create({ firstName, lastName });
+        const newChat = await Chat.create({ firstName, lastName, userId });
         res.status(StatusCodes.OK).json(newChat);
     } catch (error) {
       res
