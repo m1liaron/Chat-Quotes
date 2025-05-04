@@ -29,6 +29,31 @@ const register = async (req, res) => {
       .json({ error: true, message: `Error during register: ${error}` });
   }
 };
-const login = async (req, res) => {};
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: "Missing fields" });
+      return;
+    }
+
+    const existUser = await User.findOne({ email });
+    if (!existUser) {
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: true, message: `User with email: ${email}, not exist` });
+      return;
+    }
+
+    const token = existUser.createJWT(existUser.id, existUser.username);
+
+    res.status(StatusCodes.CREATED).json({ user: existUser, token });
+  } catch (error) {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: true, message: `Error during register: ${error}` });
+  }
+};
 
 export { register, login };
