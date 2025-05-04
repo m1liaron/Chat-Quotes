@@ -49,6 +49,18 @@ const updateChat = async (req, res) => {
 };
 const removeChat = async (req, res) => {
     try {
+        const { chatId } = req.params;
+        const removed = await Chat.findByIdAndDelete(chatId);
+
+        if (!removed) {
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .json({ error: true, message: "Chat not found." });
+        }
+
+        res
+            .status(StatusCodes.OK)
+            .json({ error: false, message: "Chat deleted successfully." });
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: true, message: error || "Server error"});
     }
