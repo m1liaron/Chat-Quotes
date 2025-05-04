@@ -23,6 +23,24 @@ const createChat = async (req, res) => {
 }
 const updateChat = async (req, res) => {
     try {
+        const { 
+            params: { chatId },
+            body: { firstName, lastName }
+        } = req;
+        
+        if ((firstName && !firstName.trim()) || (lastName && !lastName.trim())) {
+        return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ error: true, message: "Names cannot be empty strings." });
+        }
+        const updatedChat = await Chat.findByIdAndUpdate(chatId, req.body, { new: true });
+        if (!updated) {
+        return res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ error: true, message: "Chat not found." });
+        }
+        
+        res.status(StatusCodes.OK).json(updatedChat);
     } catch (error) {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -31,8 +49,7 @@ const updateChat = async (req, res) => {
 };
 const removeChat = async (req, res) => {
     try {
-
-    } catch(error) {
+    } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: true, message: error || "Server error"});
     }
 };
