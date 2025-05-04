@@ -12,5 +12,5 @@ const ChatSchema = new Schema(
   },
 );
 
-const User = model("User", ChatSchema);
-export default User;
+const Chat = model("User", ChatSchema);
+export default Chat;
