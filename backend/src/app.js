@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import { connectMongoDb } from "./db/connectMongoDb.js";
 const app = express();
 
 app.use(express.json());
@@ -10,10 +11,12 @@ dotenv.config();
 const port = process.env.PORT || 4000;
 
 (async () => {
-    try {
-		app.listen(port, () => {
-			console.log(`Server running on port: ${port}...`);
-		});
+   try {
+      
+      await connectMongoDb();
+      app.listen(port, () => {
+        console.log(`Server running on port: ${port}...`);
+      });
     } catch(error) {
         console.error("Error starting server: ", error);
     }
