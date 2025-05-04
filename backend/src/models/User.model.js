@@ -1,5 +1,7 @@
 
 import { Schema, model } from "mongoose";
+import jwt from "jsonwebtoken"
+import { envVariables } from "../common/envVariables";
 
 const UserSchema = new Schema(
   {
@@ -11,6 +13,23 @@ const UserSchema = new Schema(
     timestamps: true,
   },
 );
+
+UserSchema.methods.createJWT = function () {
+    return jwt.sign(
+        { userId: this._id, name: this.name },
+        envVariables.JWT_SECRET,
+        {
+            expiresIn: envVariables.JWT_LIFETIME
+        }
+    )
+}
+
+UserSchema.set("toJSON", {
+  transform: (_doc, ret) => {
+    delete ret.password;
+    return ret;
+  },
+});
 
 const User = model("User", UserSchema);
 export default User;
