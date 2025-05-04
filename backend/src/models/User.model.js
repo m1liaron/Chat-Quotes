@@ -1,7 +1,7 @@
 
 import { Schema, model } from "mongoose";
 import jwt from "jsonwebtoken"
-import { envVariables } from "../common/envVariables";
+import { envVariables } from "../common/envVariables.js";
 
 const UserSchema = new Schema(
   {
