@@ -5,7 +5,18 @@ import { ChatItem } from "../../components/ChatItem/ChatItem";
 import "./SideBar.css";
 
 const SideBar: React.FC = () => {
-    const [chats, setChats] = useState<Chat[]>([]);
+    const [chats, setChats] = useState<Chat[]>([
+        {
+            _id: "fdsfsd",
+            firstName: "Alex",
+            lastName: "Beaver"
+        },
+        {
+            _id: "fdsfsdfsdsaer3",
+            firstName: "John",
+            lastName: "Johns"
+        }
+    ]);
 
     useEffect(() => {
         const getChats = async () => {
