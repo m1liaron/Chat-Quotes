@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Chat } from "../../common/types/Chat";
 import axios from "axios";
 import { ChatItem } from "../../components/ChatItem/ChatItem";
+import "./SideBar.css";
 
 const SideBar: React.FC = () => {
     const [chats, setChats] = useState<Chat[]>([]);
@@ -15,7 +16,7 @@ const SideBar: React.FC = () => {
     }, []);
     
     return (
-        <ul>
+        <ul className="navbar__list">
             {chats.map(chat => <ChatItem {...chat} key={chat._id}/>)}
         </ul>
     )
