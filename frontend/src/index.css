@@ -63,7 +63,7 @@ body {
   height: 100vh;
 }
 
-.root {
+#root {
     display: flex;
     width: 100%;
 }
