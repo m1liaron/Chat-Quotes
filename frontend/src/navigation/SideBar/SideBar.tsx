@@ -27,9 +27,23 @@ const SideBar: React.FC = () => {
     }, []);
     
     return (
-        <ul className="navbar__list">
-            {chats.map(chat => <ChatItem {...chat} key={chat._id}/>)}
-        </ul>
+        <div className="sidebar">
+            <div className="top-bar">
+                <div className="profile-icon"></div>
+                <button className="login-btn">Log in</button>
+            </div>
+            <input
+                type="text"
+                placeholder="Search or start new chat"
+                className="search-bar"
+            />
+            <div className="chat-list">
+                <ChatItem
+                    firstName="Velazquez"
+                    lastName=""
+                />
+            </div>
+        </div>
     )
 }
 

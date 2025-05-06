@@ -8,10 +8,14 @@ interface ChatItemProps {
 
 const ChatItem: React.FC<ChatItemProps> = ({ firstName, lastName }) => {
     return (
-        <li className="navbar__list__item">
-            <img />
-            <h3>{firstName} {lastName}</h3>
-        </li>
+        <div className="chat-item">
+            <img src="https://via.placeholder.com/40" alt="Avatar" />
+            <div className="chat-info">
+                <strong>{firstName} {lastName}</strong>
+                {/* {message && <p>{message}</p>} */}
+            </div>
+            {/* {date && <span className="chat-date">{date}</span>} */}
+        </div>
     )
 }
 

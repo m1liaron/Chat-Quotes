@@ -1,13 +1,13 @@
 import React from "react";
 import "./MainPage.styles.css";
 import { SideBar } from "../../navigation/SideBar/SideBar";
-import { Dialog } from "../../components/Dialog/Dialog";
+import { ChatWindow } from "../../components/ChatWindow/ChatWindow";
 
 const MainPage: React.FC = () => {
     return (
         <>
             <SideBar />
-            <Dialog/>
+            <ChatWindow />
         </>
     )
 }
