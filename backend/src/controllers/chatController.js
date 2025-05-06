@@ -1,6 +1,31 @@
 import { StatusCodes } from "http-status-codes";
 import Chat from "../models/Chat.model.js";
 
+const getChats = async (req, res) => {
+    try {
+        const chats = await Chat.find();
+
+        res.status(StatusCodes.OK).json(chats);
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: true, message: error || "Server error" });
+  }
+};
+
+const getChat = async (req, res) => {
+    try {
+        const { chatId } = req.params
+        const chat = await Chat.findById(chatId);
+
+        res.status(StatusCodes.OK).json(chat);
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: true, message: error || "Server error" });
+  }
+};
+
 const createChat = async (req, res) => {
     try {
         const { firstName, lastName, userId } = req.body;
@@ -65,6 +90,8 @@ const removeChat = async (req, res) => {
 };
 
 export {
+    getChats,
+    getChat,
     createChat,
     updateChat,
     removeChat
