@@ -1,9 +1,14 @@
 import React from "react";
 import "./MainPage.styles.css";
+import { SideBar } from "../../navigation/SideBar/SideBar";
+import { ChatWindow } from "../../components/ChatWindow/ChatWindow";
 
 const MainPage: React.FC = () => {
     return (
-        <h1>Main Page</h1>
+        <>
+            <SideBar />
+            <ChatWindow />
+        </>
     )
 }
 
