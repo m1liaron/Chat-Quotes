@@ -1,5 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import Chat from "../models/Chat.model.js";
+import Message from "../models/Message.model.js";
 
 const getChats = async (req, res) => {
     try {
@@ -25,6 +26,16 @@ const getChat = async (req, res) => {
       .json({ error: true, message: error || "Server error" });
   }
 };
+
+const getChatMessages = async (req, res) => {
+    try {
+      const { chatId } = req.params;
+      const messages = await Message.find({ chatId });
+      res.json(messages);
+    } catch (err) {
+      res.status(500).json({ error: "Failed to fetch messages" });
+    }
+}
 
 const createChat = async (req, res) => {
     try {
@@ -92,6 +103,7 @@ const removeChat = async (req, res) => {
 export {
     getChats,
     getChat,
+    getChatMessages,
     createChat,
     updateChat,
     removeChat
