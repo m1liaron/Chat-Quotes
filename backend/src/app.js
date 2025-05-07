@@ -1,5 +1,6 @@
 import express from "express";
 import http from "http";
+import { Server } from "socket.io";
 import { WebSocketServer } from "ws"
 import dotenv from "dotenv";
 import cors from "cors";
@@ -9,6 +10,12 @@ import { registerRoutes } from "./helpers/helpers.js";
 
 const app = express();
 const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+})
 
 dotenv.config();
 app.use(express.json());
@@ -18,19 +25,22 @@ registerRoutes(app);
 
 const port = process.env.PORT || 4000;
 
-const wss = new WebSocketServer({ server });
-
-wss.on("connection", (ws) => {
-  console.log("Client connected via WebSocket");
+io.on("connection", (socket) => {
+  console.log("Client connected via Socket.IO:", socket.id)
   
-  ws.on("message", (message) => {
-    console.log("Received:", message.toString());
+  socket.on("sendMessage", (message) => {
+    console.log(`Server received: ${message.text}`)
 
-    ws.send(`Server received: ${message}`);
+    socket.emit("receiveMessage", {
+      _id: Date.now().toString(),
+      text: `Server received: ${message}`,
+      time: new Date().toLocaleString()
+    })
+
   });
 
- ws.on("close", () => {
-   console.log("Client disconnected");
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
  });
 });
 
@@ -40,7 +50,7 @@ wss.on("connection", (ws) => {
       validateEnvVariables();
       await connectMongoDb();
       server.listen(port, () => {
-        console.log(`HTTP + WebSocket server running on port: ${port}...`);
+        console.log(`HTTP + Socket.IO server running on port: ${port}...`);
       });
     } catch(error) {
         console.error("Error starting server: ", error);
