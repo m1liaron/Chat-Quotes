@@ -1,12 +1,12 @@
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import { WebSocketServer } from "ws"
 import dotenv from "dotenv";
 import cors from "cors";
 import { connectMongoDb } from "./db/connectMongoDb.js";
 import { validateEnvVariables } from "./helpers/validateEnvVariables.js";
 import { registerRoutes } from "./helpers/helpers.js";
+import Message from "./models/Message.model.js"
 
 const app = express();
 const server = http.createServer(app);
@@ -28,8 +28,8 @@ const port = process.env.PORT || 4000;
 io.on("connection", (socket) => {
   console.log("Client connected via Socket.IO:", socket.id)
   
-  socket.on("sendMessage", (message) => {
-    console.log(`Server received: ${message.text}`)
+  socket.on("sendMessage", async (message) => {
+    const message = await Message.create(message);
 
     socket.emit("receiveMessage", {
       _id: Date.now().toString(),
