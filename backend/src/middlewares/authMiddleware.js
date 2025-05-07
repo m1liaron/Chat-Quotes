@@ -1,10 +1,12 @@
+import { StatusCodes } from "http-status-codes";
 import User from "../models/User.model.js";
 import jwt from "jsonwebtoken";
 
 const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer")) {
-    throw new UnauthenticatedError("Authentication invalid");
+    res.status(StatusCodes.UNAUTHORIZED).json({ error: true, message: "Authentication invalid"})
+    return
   }
   const token = authHeader.split(" ")[1];
 
@@ -19,7 +21,8 @@ const authMiddleware = async (req, res, next) => {
     };
     next();
   } catch (error) {
-    throw new UnauthenticatedError("Authentication invalid");
+    res.status(StatusCodes.UNAUTHORIZED).json({ error: true, message: "Authentication invalid"})
+    return
   }
 };
 
