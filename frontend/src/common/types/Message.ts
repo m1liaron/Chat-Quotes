@@ -1,7 +1,7 @@
 
 
 type Message = {
-    _id: string;
+    _id?: string;
     text: string;
     time: string;
 }

@@ -42,6 +42,25 @@ const ChatWindow: React.FC = () => {
             socket.disconnect();
           };
     }, []);
+
+    const sendMessage = () => {
+        if(!inputValue.trim()) return;
+
+        const message: Message = {
+            text: inputValue,
+            time: new Date().toLocaleString()
+        }
+
+        setMessages((prev) => [...prev, message]);
+        socket.emit("sendMessage", message);
+        setInputValue("");
+    }
+
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key === "Enter") {
+            sendMessage();
+        }
+    }
  
     return (
         <div className="chat-window">
@@ -58,7 +77,9 @@ const ChatWindow: React.FC = () => {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder="Type a message..."
+                    onKeyDown={handleKeyPress}
                 />
+                <button onClick={sendMessage}>Send</button>
             </div>
         </div>
     )
