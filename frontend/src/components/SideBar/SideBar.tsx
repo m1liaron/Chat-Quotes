@@ -5,10 +5,11 @@ import "./SideBar.css";
 import { serverApi } from "../../common/app/ApiPath";
 import { useChats } from "../../contexts/ChatsProvider";
 import { useUser } from "../../contexts/UserProvider";
+import { googleLogout } from "@react-oauth/google";
 
 const SideBar: React.FC = () => {
     const { setChat, chats, setChats } = useChats();
-    const { user } = useUser();
+    const { user, setUser } = useUser();
 
     useEffect(() => {
         const getChats = async () => {
@@ -30,10 +31,29 @@ const SideBar: React.FC = () => {
         setChat(newChatData);
     }
 
+    const handleLogout = () => {
+        const sure = confirm("Are you sure you want to logout?");
+        if(sure) {
+            if(user?.googleId) {
+                googleLogout();
+            }
+            setUser(null);
+            localStorage.removeItem("token");
+        }
+    }
+
     return (
         <div className="sidebar">
             <div className="top-bar">
-                <div className="profile-icon"></div>
+                    {user?.avatar && (
+                        <>
+                            <div>
+                                <img src={user.avatar} alt="User Avatar" className="avatar"/>
+                                <h3>{user.firstName} {user.lastName}</h3>
+                            </div>
+                            <button onClick={handleLogout}>Log Out</button>
+                        </>
+                    )}
             </div>
             <input
                 type="text"

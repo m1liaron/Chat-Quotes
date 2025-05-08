@@ -36,7 +36,7 @@ const RegisterPage: React.FC = () => {
 
   const handleGoogleLogin = async (credentials: GoogleCredentialResponse) => {
     if(credentials?.credential) {
-      const response = await axios.post(`${serverApi}/login-google`, { credential: credentials.credential});
+      const response = await axios.post(`${serverApi}/auth/google-login`, { credential: credentials.credential});
       if (response.status <= 400) {
         setUser(response.data.user);
         localStorage.setItem("token", response.data.token);

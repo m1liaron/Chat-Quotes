@@ -34,6 +34,7 @@ const LoginPage: React.FC = () => {
   };
 
   const handleGoogleLogin = async (credentials: GoogleCredentialResponse) => {
+    console.log(credentials)
     if(credentials?.credential) {
       const response = await axios.post(`${serverApi}/auth/google-login`, { credential: credentials.credential});
       if (response.status <= 400) {
