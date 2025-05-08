@@ -5,6 +5,7 @@ import { AppPath } from '../../common/app/AppPath';
 import { serverApi } from '../../common/app/ApiPath';
 import axios from 'axios';
 import { useUser } from '../../contexts/UserProvider';
+import { GoogleCredentialResponse, GoogleLogin } from '@react-oauth/google';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -31,6 +32,20 @@ const LoginPage: React.FC = () => {
           setError(response.data.error.message);
       }
   };
+
+  const handleGoogleLogin = async (credentials: GoogleCredentialResponse) => {
+    console.log(credentials)
+    if(credentials?.credential) {
+      const response = await axios.post(`${serverApi}/auth/google-login`, { credential: credentials.credential});
+      if (response.status <= 400) {
+        setUser(response.data.user);
+        localStorage.setItem("token", response.data.token);
+        navigate(AppPath.Root);
+      } else {
+          setError(response.data.error.message);
+      }
+    }
+  }
 
   return (
     <div className="login-container">
@@ -65,6 +80,7 @@ const LoginPage: React.FC = () => {
         <button type="submit" className="login-button">
           Login
         </button>
+        <GoogleLogin onSuccess={handleGoogleLogin} onError={() => console.log("Login failed")}/>
         <Link to={AppPath.Register}>Don't have an account?</Link>      
       </form>
     </div>

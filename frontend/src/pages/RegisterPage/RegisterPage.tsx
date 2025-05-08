@@ -4,6 +4,7 @@ import { AppPath } from '../../common/app/AppPath';
 import axios from 'axios';
 import { serverApi } from '../../common/app/ApiPath';
 import { useUser } from '../../contexts/UserProvider';
+import { GoogleCredentialResponse, GoogleLogin } from '@react-oauth/google';
 
 const RegisterPage: React.FC = () => {
   const [firstName, setFirstName] = useState('');
@@ -23,7 +24,7 @@ const RegisterPage: React.FC = () => {
     }
 
     setError('');
-      const response = await axios.post(`${serverApi}/auth/register`, { firstName, lastName, email, password });
+      const response = await axios.post(`${serverApi}/auth/google-login`, { firstName, lastName, email, password });
     if (response.status <= 400) {
         setUser(response.data.user);
         localStorage.setItem("token", response.data.token);
@@ -32,6 +33,19 @@ const RegisterPage: React.FC = () => {
           setError(response.data.error.message);
       }
   };
+
+  const handleGoogleLogin = async (credentials: GoogleCredentialResponse) => {
+    if(credentials?.credential) {
+      const response = await axios.post(`${serverApi}/auth/google-login`, { credential: credentials.credential});
+      if (response.status <= 400) {
+        setUser(response.data.user);
+        localStorage.setItem("token", response.data.token);
+        navigate(AppPath.Root);
+      } else {
+          setError(response.data.error.message);
+      }
+    }
+  }
 
   return (
     <div className="login-container">
@@ -88,6 +102,7 @@ const RegisterPage: React.FC = () => {
         <button type="submit" className="login-button">
           Login
         </button>
+         <GoogleLogin onSuccess={handleGoogleLogin} onError={() => console.log("Login failed")}/>
         <Link to={AppPath.Login}>Already have an account?</Link>      
       </form>
     </div>
