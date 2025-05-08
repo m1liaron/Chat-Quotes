@@ -4,7 +4,7 @@ import { authRoute } from "../routes/routes.js";
 
 const registerRoutes = (app) => {
     app.use("/auth", authRoute);
-    app.use("/chats", authMiddleware, chatRoute);
+    app.use("/chats", chatRoute);
 }
 
 export { registerRoutes };

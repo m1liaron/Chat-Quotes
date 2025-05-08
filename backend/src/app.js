@@ -30,16 +30,17 @@ io.on("connection", (socket) => {
   console.log("Client connected via Socket.IO:", socket.id)
   
   socket.on("sendMessage", async (message) => {
-    // await Message.create(message);
-    const randomQuote = getRandomQuote();
+    await Message.create(message);
+    const randomQuote = await getRandomQuote();
 
     const responseData = {
-      text: randomQuote.quote,
-      time: new Date().toLocaleString()
-    }
+      text: `${randomQuote.quote} \n - ${randomQuote.author}`,
+      time: new Date().toLocaleString(),
+      chatId: message.chatId,
+    };
 
-    socket.emit("receiveMessage", responseData);
-    // await Message.create(responseData);
+    const serverMessage = await Message.create(responseData);
+    socket.emit("receiveMessage", serverMessage);
 
   });
 
