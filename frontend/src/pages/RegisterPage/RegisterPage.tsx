@@ -38,13 +38,7 @@ const RegisterPage: React.FC = () => {
 
   const handleGoogleLogin = async (credentials: GoogleCredentialResponse) => {
     if(credentials?.credential) {
-      const data: GoogleCredentials = jwtDecode(credentials.credential);
-      const userData = {
-        email: data.email,
-        firstName: data.given_name,
-        lastName: data.family_name
-      }
-      const response = await axios.post(`${serverApi}/register-google`, userData);
+      const response = await axios.post(`${serverApi}/register-google`, { credential: credentials.credential});
       if (response.status <= 400) {
         setUser(response.data.user);
         localStorage.setItem("token", response.data.token);
@@ -52,7 +46,6 @@ const RegisterPage: React.FC = () => {
       } else {
           setError(response.data.error.message);
       }
-      console.log(data)
     }
   }
 
