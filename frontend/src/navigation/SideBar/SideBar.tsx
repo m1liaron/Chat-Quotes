@@ -4,19 +4,12 @@ import axios from "axios";
 import { ChatItem } from "../../components/ChatItem/ChatItem";
 import "./SideBar.css";
 
-const SideBar: React.FC = () => {
-    const [chats, setChats] = useState<Chat[]>([
-        {
-            _id: "fdsfsd",
-            firstName: "Alex",
-            lastName: "Beaver"
-        },
-        {
-            _id: "fdsfsdfsdsaer3",
-            firstName: "John",
-            lastName: "Johns"
-        }
-    ]);
+interface SideBarProps {
+    setChat: (chat: Chat) => void
+}
+
+const SideBar: React.FC<SideBarProps> = ({ setChat }) => {
+    const [chats, setChats] = useState<Chat[]>([]);
 
     useEffect(() => {
         const getChats = async () => {
@@ -38,10 +31,7 @@ const SideBar: React.FC = () => {
                 className="search-bar"
             />
             <div className="chat-list">
-                <ChatItem
-                    firstName="Velazquez"
-                    lastName=""
-                />
+                {chats.map(chat => <ChatItem key={chat._id} item={chat} setChat={setChat} />)}
             </div>
         </div>
     )
