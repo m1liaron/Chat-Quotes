@@ -48,7 +48,7 @@ const LoginPage: React.FC = () => {
         firstName: data.given_name,
         lastName: data.family_name
       }
-      const response = await axios.post(`${serverApi}/register-google`, userData);
+      const response = await axios.post(`${serverApi}/login-google`, userData);
       if (response.status <= 400) {
         setUser(response.data.user);
         localStorage.setItem("token", response.data.token);
