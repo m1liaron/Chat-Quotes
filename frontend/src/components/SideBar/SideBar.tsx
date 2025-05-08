@@ -13,7 +13,7 @@ const SideBar: React.FC = () => {
 
     useEffect(() => {
         const getChats = async () => {
-            const response = await axios.get("http://localhost:3000/chats");
+            const response = await axios.get(`${serverApi}/chats`);
             setChats(response.data);
         }
         getChats();

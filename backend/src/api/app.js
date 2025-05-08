@@ -3,13 +3,13 @@ import http from "http";
 import { Server } from "socket.io";
 import dotenv from "dotenv";
 import cors from "cors";
-import { connectMongoDb } from "./db/connectMongoDb.js";
-import { validateEnvVariables } from "./helpers/validateEnvVariables.js";
-import { registerRoutes } from "./helpers/helpers.js";
-import Message from "./models/Message.model.js"
-import getRandomQuote from "./api/getRandomQuote.js";
-import { authMiddleware } from "./middlewares/authMiddleware.js";
-import { socketAuthMiddleware } from "./middlewares/socketAuthMiddleware.js";
+import { connectMongoDb } from "../db/connectMongoDb.js";
+import { validateEnvVariables } from "../helpers/validateEnvVariables.js";
+import { registerRoutes } from "../helpers/helpers.js";
+import Message from "../models/Message.model.js"
+import getRandomQuote from "./getRandomQuote.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { socketAuthMiddleware } from "../middlewares/socketAuthMiddleware.js";
 
 const app = express();
 const server = http.createServer(app);

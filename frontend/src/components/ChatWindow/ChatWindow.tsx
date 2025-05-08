@@ -59,7 +59,7 @@ const ChatWindow = () => {
         const fetchMessages = async () => {
             if (!chat?._id) return;
             try {
-                const res = await axios.get<Message[]>(`http://localhost:3000/chats/${chat._id}/messages`);
+                const res = await axios.get<Message[]>(`${serverApi}/chats/${chat._id}/messages`);
                 setMessages(res.data);
             } catch (error) {
                  console.error("Error fetching messages:", error);
