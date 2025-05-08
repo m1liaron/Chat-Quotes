@@ -1,0 +1,9 @@
+
+.chat__add__button {
+    position: absolute;
+    left: 210px;
+    bottom: 10px;
+    width: 85px;
+    color: #fff;
+    border-radius: 100%;
+}
