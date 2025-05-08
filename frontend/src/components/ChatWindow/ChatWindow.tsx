@@ -7,6 +7,7 @@ import axios from "axios";
 import { serverApi } from "../../common/app/ApiPath";
 import { useChats } from "../../contexts/ChatsProvider";
 import { useUser } from "../../contexts/UserProvider";
+import NotificationSound from "../../assets/audio/notification.mp3";
 
 let socket: Socket;
 
@@ -39,9 +40,14 @@ const ChatWindow = () => {
         socket.on("receiveMessage", (data: Message) => {
             console.log("Received message from server:", data);
             setMessages((prevMessages) => [...prevMessages, data]);
-            if (chat) {
-                setMessages((prevMessages) => [...prevMessages, data]);
-            }
+            const audio = new Audio(NotificationSound);
+
+            audio.play();
+            Notification.requestPermission().then(permission => {
+                if(permission === "granted") {
+                    new Notification("New Message", { body: data.text })
+                }
+            })
         });
 
           return () => {
