@@ -163,11 +163,13 @@ body {
 }
 
 .messages {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
 }
-
 .message {
   max-width: 60%;
   margin-bottom: 10px;

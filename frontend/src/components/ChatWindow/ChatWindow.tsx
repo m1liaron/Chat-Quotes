@@ -6,6 +6,7 @@ import { io, Socket } from "socket.io-client";
 import axios from "axios";
 import { serverApi } from "../../common/app/ApiPath";
 import { useChats } from "../../contexts/ChatsProvider";
+import { useUser } from "../../contexts/UserProvider";
 
 let socket: Socket;
 
@@ -15,6 +16,7 @@ const ChatWindow = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const { chat, setChat, chats, setChats } = useChats();  
+    const { user } = useUser();
 
     useEffect(() => {
         if (chat) {
@@ -24,7 +26,11 @@ const ChatWindow = () => {
     }, [chat]);
 
     useEffect(() => {
-        socket = io("http://localhost:3000");
+        socket = io("http://localhost:3000", {
+            auth: {
+                token: localStorage.getItem("token")
+            }
+        });
 
         socket.on("connect", () => {
             console.log("Connected to socket server");
@@ -116,7 +122,7 @@ const ChatWindow = () => {
                 <button className="chat__remove__button" onClick={removeChat}>Remove Chat</button>
             </div>
             <div className="messages">
-                {messages.map((message) => <MessageBubble key={message._id || message.chatId} text={message.text} time={message.time}/>)}
+                {messages.map((message) => <MessageBubble key={message._id || message.chatId} text={message.text} time={message.time} left={message.userId !== user?._id} />)}
             </div>
             <div className="chat-input">
                 <input

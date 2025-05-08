@@ -34,7 +34,6 @@ const SideBar: React.FC = () => {
         <div className="sidebar">
             <div className="top-bar">
                 <div className="profile-icon"></div>
-                <button className="login-btn">Log in</button>
             </div>
             <input
                 type="text"
