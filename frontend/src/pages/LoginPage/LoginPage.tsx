@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import './LoginPage.styles.css';
+import { Link } from 'react-router-dom';
+import { AppPath } from '../../common/app/AppPath';
 
 const LoginPage: React.FC = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -26,28 +26,6 @@ const LoginPage: React.FC = () => {
         <h2 className="login-title">Login</h2>
 
         {error && <p className="login-error">{error}</p>}
-
-        <div>
-          <label className="login-label">Firstname</label>
-          <input
-            type="text"
-            value={firstName}
-            onChange={e => setFirstName(e.target.value)}
-            className="login-input"
-            placeholder="Alex"
-          />
-              </div>
-        <div>
-                  
-        <label className="login-label">Lastname</label>
-          <input
-            type="text"
-            value={lastName}
-            onChange={e => setLastName(e.target.value)}
-            className="login-input"
-            placeholder="Konopla"
-          />
-        </div>
 
 
         <div>
@@ -75,6 +53,7 @@ const LoginPage: React.FC = () => {
         <button type="submit" className="login-button">
           Login
         </button>
+        <Link to={AppPath.Register}>Don't have an account?</Link>      
       </form>
     </div>
   );
