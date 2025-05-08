@@ -61,15 +61,16 @@ const updateChat = async (req, res) => {
             params: { chatId },
             body: { firstName, lastName }
         } = req;
+      
         
         if ((firstName && !firstName.trim()) || (lastName && !lastName.trim())) {
         return res
             .status(StatusCodes.BAD_REQUEST)
             .json({ error: true, message: "Names cannot be empty strings." });
         }
-        const updatedChat = await Chat.findByIdAndUpdate(chatId, req.body, { new: true });
-        if (!updated) {
-        return res
+      const updatedChat = await Chat.findByIdAndUpdate(chatId, { firstName, lastName }, { new: true });
+        if (!updatedChat) {
+          return res
             .status(StatusCodes.NOT_FOUND)
             .json({ error: true, message: "Chat not found." });
         }

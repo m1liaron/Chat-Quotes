@@ -5,6 +5,7 @@ import { Message } from "../../common/types/Message";
 import { io, Socket } from "socket.io-client";
 import { Chat } from "../../common/types/Chat";
 import axios from "axios";
+import { serverApi } from "../../common/app/ApiPath";
 
 let socket: Socket;
 
@@ -80,6 +81,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
         }
     }
 
+    const updateChat = async () => {
+        await axios.put(`${serverApi}/chats/${chat?._id}`, { firstName, lastName });
+    }
+
     if (!chat) {
         return (
             <div className="chat-window placeholder">
@@ -93,7 +98,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
             <div className="chat-header">
                 <img src="*" alt="Avatar" />
                 <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="chat__user__name"/>
-                <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="chat__user__name"/>
+                <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="chat__user__name" />
+                <button onClick={updateChat}>Update</button>
             </div>
             <div className="messages">
                 {messages.map((message) => <MessageBubble key={message._id || message.chatId} text={message.text} time={message.time}/>)}
