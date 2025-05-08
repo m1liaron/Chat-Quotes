@@ -5,7 +5,7 @@ import { Message } from "../../common/types/Message";
 import { io, Socket } from "socket.io-client";
 import axios from "axios";
 import { serverApi } from "../../common/app/ApiPath";
-import { useChats } from "../../context/ChatsProvider";
+import { useChats } from "../../contexts/ChatsProvider";
 
 let socket: Socket;
 

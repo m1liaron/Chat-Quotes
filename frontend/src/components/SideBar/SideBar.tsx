@@ -3,7 +3,7 @@ import axios from "axios";
 import { ChatItem } from "../ChatItem/ChatItem";
 import "./SideBar.css";
 import { serverApi } from "../../common/app/ApiPath";
-import { useChats } from "../../context/ChatsProvider";
+import { useChats } from "../../contexts/ChatsProvider";
 
 const SideBar: React.FC = () => {
     const { setChat, chats, setChats } = useChats();
