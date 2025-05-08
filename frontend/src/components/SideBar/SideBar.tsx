@@ -3,10 +3,12 @@ import axios from "axios";
 import { ChatItem } from "../ChatItem/ChatItem";
 import "./SideBar.css";
 import { serverApi } from "../../common/app/ApiPath";
-import { useChats } from "../../context/ChatsProvider";
+import { useChats } from "../../contexts/ChatsProvider";
+import { useUser } from "../../contexts/UserProvider";
 
 const SideBar: React.FC = () => {
     const { setChat, chats, setChats } = useChats();
+    const { user } = useUser();
 
     useEffect(() => {
         const getChats = async () => {
@@ -17,22 +19,21 @@ const SideBar: React.FC = () => {
     }, []);
     
 
-    const createChat = () => {
+    const createChat = async () => {
         const newChatData = {
             firstName: "User firstname",
             lastName: "User lastname",
-            userId: "681cb19dce5a78db6154c16a"
+            userId: user?._id
         }
-        setChats(prev => [...prev, newChatData]);
+        const response = await axios.post(`${serverApi}/chats`, newChatData);
+        setChats(prev => [...prev, response.data]);
         setChat(newChatData);
-        axios.post(`${serverApi}/chats`, newChatData);
     }
 
     return (
         <div className="sidebar">
             <div className="top-bar">
                 <div className="profile-icon"></div>
-                <button className="login-btn">Log in</button>
             </div>
             <input
                 type="text"

@@ -3,9 +3,9 @@ import { StatusCodes } from "http-status-codes";
 
 const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
-    if (!username || !email || !password) {
+    if (!firstName || !lastName || !email || !password) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: "Missing fields" });
       return;
     }
@@ -19,7 +19,7 @@ const register = async (req, res) => {
       return;
     }
 
-      const user = await User.create({ username, email, password });
+      const user = await User.create({ firstName, lastName, email, password });
       const token = user.createJWT();
 
     res.status(StatusCodes.CREATED).json({ user, token });

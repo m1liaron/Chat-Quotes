@@ -5,7 +5,8 @@ import { Message } from "../../common/types/Message";
 import { io, Socket } from "socket.io-client";
 import axios from "axios";
 import { serverApi } from "../../common/app/ApiPath";
-import { useChats } from "../../context/ChatsProvider";
+import { useChats } from "../../contexts/ChatsProvider";
+import { useUser } from "../../contexts/UserProvider";
 
 let socket: Socket;
 
@@ -15,6 +16,7 @@ const ChatWindow = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const { chat, setChat, chats, setChats } = useChats();  
+    const { user } = useUser();
 
     useEffect(() => {
         if (chat) {
@@ -24,7 +26,11 @@ const ChatWindow = () => {
     }, [chat]);
 
     useEffect(() => {
-        socket = io("http://localhost:3000");
+        socket = io("http://localhost:3000", {
+            auth: {
+                token: localStorage.getItem("token")
+            }
+        });
 
         socket.on("connect", () => {
             console.log("Connected to socket server");
@@ -64,7 +70,8 @@ const ChatWindow = () => {
         const message: Message = {
             text: inputValue,
             time: new Date().toLocaleString(),
-            chatId: chat?._id
+            chatId: chat?._id,
+            userId: user?._id
         }
 
         setMessages((prev) => [...prev, message]);
@@ -79,7 +86,11 @@ const ChatWindow = () => {
     }
 
     const updateChat = async () => {
-        await axios.put(`${serverApi}/chats/${chat?._id}`, { firstName, lastName });
+        const response = await axios.put(`${serverApi}/chats/${chat?._id}`, { firstName, lastName });
+        const updatedChats = [...chats];
+        const updatedChatId = chats.findIndex(ch => ch._id === chat?._id);
+        updatedChats[updatedChatId] = response.data;
+        setChats(updatedChats)
     }
 
     const removeChat = async () => {
@@ -112,7 +123,7 @@ const ChatWindow = () => {
                 <button className="chat__remove__button" onClick={removeChat}>Remove Chat</button>
             </div>
             <div className="messages">
-                {messages.map((message) => <MessageBubble key={message._id || message.chatId} text={message.text} time={message.time}/>)}
+                {messages.map((message) => <MessageBubble key={message._id || message.chatId} text={message.text} time={message.time} left={message.userId !== user?._id} />)}
             </div>
             <div className="chat-input">
                 <input

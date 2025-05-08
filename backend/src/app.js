@@ -8,6 +8,8 @@ import { validateEnvVariables } from "./helpers/validateEnvVariables.js";
 import { registerRoutes } from "./helpers/helpers.js";
 import Message from "./models/Message.model.js"
 import getRandomQuote from "./api/getRandomQuote.js";
+import { authMiddleware } from "./middlewares/authMiddleware.js";
+import { socketAuthMiddleware } from "./middlewares/socketAuthMiddleware.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -26,17 +28,23 @@ registerRoutes(app);
 
 const port = process.env.PORT || 4000;
 
+io.use(socketAuthMiddleware);
+
 io.on("connection", (socket) => {
   console.log("Client connected via Socket.IO:", socket.id)
   
   socket.on("sendMessage", async (message) => {
-    await Message.create(message);
+    await Message.create({
+      ...message,
+      userId: socket.user.userId
+    });
     const randomQuote = await getRandomQuote();
 
     const responseData = {
       text: `${randomQuote.quote} \n - ${randomQuote.author}`,
       time: new Date().toLocaleString(),
       chatId: message.chatId,
+      userId: "server"
     };
 
     const serverMessage = await Message.create(responseData);

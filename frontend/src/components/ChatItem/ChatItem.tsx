@@ -1,7 +1,7 @@
 import React from "react";
 import "./ChatItem.css";
 import { Chat } from "../../common/types/Chat";
-import { useChats } from "../../context/ChatsProvider";
+import { useChats } from "../../contexts/ChatsProvider";
 
 interface ChatItemProps {
     item: Chat,

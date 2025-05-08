@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import User from "./User.model.js";
 
 const MessageSchema = new Schema(
   {
@@ -9,7 +10,10 @@ const MessageSchema = new Schema(
       ref: "Chat",
       required: true
     },
-    // userId: { type: String, required: true }
+    userId: { 
+      type: Schema.Types.Mixed,
+      ref: User
+     }
   },
   {
     timestamps: true,
