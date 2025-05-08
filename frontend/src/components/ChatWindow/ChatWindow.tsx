@@ -15,6 +15,15 @@ interface ChatWindowProps {
 const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+
+    useEffect(() => {
+        if (chat) {
+            setFirstName(chat.firstName);
+            setLastName(chat.lastName);
+        }
+    }, [chat]);
 
     useEffect(() => {
         socket = io("http://localhost:3000");
@@ -78,12 +87,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
             </div>
         );
     }
- 
+
     return (
         <div className="chat-window">
             <div className="chat-header">
                 <img src="*" alt="Avatar" />
-                <span>{chat?.firstName} {chat?.lastName}</span>
+                <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="chat__user__name"/>
+                <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="chat__user__name"/>
             </div>
             <div className="messages">
                 {messages.map((message) => <MessageBubble key={message._id || message.chatId} text={message.text} time={message.time}/>)}
