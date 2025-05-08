@@ -79,7 +79,11 @@ const ChatWindow = () => {
     }
 
     const updateChat = async () => {
-        await axios.put(`${serverApi}/chats/${chat?._id}`, { firstName, lastName });
+        const response = await axios.put(`${serverApi}/chats/${chat?._id}`, { firstName, lastName });
+        const updatedChats = [...chats];
+        const updatedChatId = chats.findIndex(ch => ch._id === chat?._id);
+        updatedChats[updatedChatId] = response.data;
+        setChats(updatedChats)
     }
 
     const removeChat = async () => {
