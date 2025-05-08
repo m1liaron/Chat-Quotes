@@ -6,13 +6,6 @@ import { serverApi } from '../../common/app/ApiPath';
 import axios from 'axios';
 import { useUser } from '../../contexts/UserProvider';
 import { GoogleCredentialResponse, GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
-
-type GoogleCredentials = {
-  email: string;
-  family_name: string;
-  given_name: string
-}
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -42,7 +35,7 @@ const LoginPage: React.FC = () => {
 
   const handleGoogleLogin = async (credentials: GoogleCredentialResponse) => {
     if(credentials?.credential) {
-      const response = await axios.post(`${serverApi}/login-google`, { credential: credentials.credential});
+      const response = await axios.post(`${serverApi}/auth/google-login`, { credential: credentials.credential});
       if (response.status <= 400) {
         setUser(response.data.user);
         localStorage.setItem("token", response.data.token);
