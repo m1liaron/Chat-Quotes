@@ -7,6 +7,7 @@ import {
 import { AppPath } from "./common/app/AppPath";
 import { MainPage, RegisterPage, LoginPage } from "./pages/pages";
 import { ProtectedRoute } from "./navigation/ProtectedRoute/ProtectedRoute";
+import { PublicRoute } from "./navigation/PublicRoute";
 
 const App: React.FC = () => {
 
@@ -18,8 +19,16 @@ const App: React.FC = () => {
             <MainPage/>
           </ProtectedRoute>
         } />
-        <Route path={AppPath.Register} element={<RegisterPage/>} />
-        <Route path={AppPath.Login} element={<LoginPage/>} />
+        <Route path={AppPath.Register} element={
+          <PublicRoute>
+            <RegisterPage/>
+          </PublicRoute>
+        } />
+        <Route path={AppPath.Login} element={
+          <PublicRoute>
+            <LoginPage/>
+          </PublicRoute>
+        } />
       </Routes>
     </Router>
   )
