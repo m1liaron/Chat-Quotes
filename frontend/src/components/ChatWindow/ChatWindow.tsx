@@ -51,7 +51,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
     }, [chat]);
 
     const sendMessage = () => {
-        if (!chat) return;
+        if (!chat?._id) return;
         if(!inputValue.trim()) return;
 
         const message: Message = {
