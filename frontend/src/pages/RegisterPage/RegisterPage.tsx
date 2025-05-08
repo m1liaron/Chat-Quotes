@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppPath } from '../../common/app/AppPath';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { serverApi } from '../../common/app/ApiPath';
+import { useUser } from '../../contexts/UserProvider';
 
 const RegisterPage: React.FC = () => {
   const [firstName, setFirstName] = useState('');
@@ -11,6 +12,7 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { setUser, setToken } = useUser();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,13 +22,14 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
-    console.log('Logging in with:', { email, password });
     setError('');
       const response = await axios.post(`${serverApi}/auth/register`, { firstName, lastName, email, password });
-      if(response.status <= 400) {
+    if (response.status <= 400) {
+        setUser(response.data.user);
+        setToken(response.data.token);
         navigate(AppPath.Root);
       } else {
-          setError(response.data.erorr.message);
+          setError(response.data.error.message);
       }
   };
 
