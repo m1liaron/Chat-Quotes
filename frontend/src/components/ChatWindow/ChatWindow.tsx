@@ -70,7 +70,8 @@ const ChatWindow = () => {
         const message: Message = {
             text: inputValue,
             time: new Date().toLocaleString(),
-            chatId: chat?._id
+            chatId: chat?._id,
+            userId: user?._id
         }
 
         setMessages((prev) => [...prev, message]);
