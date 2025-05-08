@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import './LoginPage.styles.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppPath } from '../../common/app/AppPath';
+import { serverApi } from '../../common/app/ApiPath';
+import axios from 'axios';
+import { useUser } from '../../contexts/UserProvider';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { setUser } = useUser();
+  const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -16,8 +21,15 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    console.log('Logging in with:', { email, password });
     setError('');
+      const response = await axios.post(`${serverApi}/auth/login`, { email, password });
+    if (response.status <= 400) {
+        setUser(response.data.user);
+        localStorage.setItem("token", response.data.token);
+        navigate(AppPath.Root);
+      } else {
+          setError(response.data.error.message);
+      }
   };
 
   return (

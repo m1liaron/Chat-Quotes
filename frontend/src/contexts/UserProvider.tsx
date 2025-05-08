@@ -4,18 +4,15 @@ import { User } from "../common/types/User";
 type UserContextType = {
     user: User | null,
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
-    token: string;
-    setToken: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string>("");
 
     return (
-        <UserContext.Provider value= {{ user, setUser, token, setToken }}>
+        <UserContext.Provider value= {{ user, setUser }}>
                 { children }
         </UserContext.Provider>
   );
