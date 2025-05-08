@@ -5,12 +5,12 @@ import { ChatWindow } from "../../components/ChatWindow/ChatWindow";
 import { Chat } from "../../common/types/Chat";
 
 const MainPage: React.FC = () => {
-    const [chat, setChat] = useState<Chat>();
+    const [chat, setChat] = useState<Chat | null>(null);
 
     return (
         <>
             <SideBar setChat={setChat}/>
-            <ChatWindow chat={chat} />
+            <ChatWindow chat={chat} setChat={setChat} />
         </>
     )
 }

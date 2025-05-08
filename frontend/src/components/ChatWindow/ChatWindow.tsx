@@ -10,10 +10,11 @@ import { serverApi } from "../../common/app/ApiPath";
 let socket: Socket;
 
 interface ChatWindowProps {
-    chat?: Chat;
+    chat?: Chat | null;
+    setChat: (chat: Chat | null) => void
 }
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
+const ChatWindow: React.FC<ChatWindowProps> = ({ chat, setChat }) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -85,6 +86,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
         await axios.put(`${serverApi}/chats/${chat?._id}`, { firstName, lastName });
     }
 
+    const removeChat = async () => {
+        const sure = confirm("Are you sure you want to delete this chat?");
+        if (sure) {
+            await axios.delete(`${serverApi}/chats/${chat?._id}`);
+            setChat(null);
+        }
+    }
+
     if (!chat) {
         return (
             <div className="chat-window placeholder">
@@ -96,10 +105,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
     return (
         <div className="chat-window">
             <div className="chat-header">
-                <img src="*" alt="Avatar" />
-                <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="chat__user__name"/>
-                <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="chat__user__name" />
-                <button onClick={updateChat}>Update</button>
+                <div>
+                    <img src="*" alt="Avatar" />
+                    <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="chat__user__name"/>
+                    <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="chat__user__name" />
+                    <button onClick={updateChat}>Update</button>
+                </div>
+
+                <button className="chat__remove__button" onClick={removeChat}>Remove Chat</button>
             </div>
             <div className="messages">
                 {messages.map((message) => <MessageBubble key={message._id || message.chatId} text={message.text} time={message.time}/>)}
