@@ -3,18 +3,25 @@ import "./ChatWindow.css";
 import { MessageBubble } from "../MessageBubble/MessageBubble";
 import { Message } from "../../common/types/Message";
 import { io, Socket } from "socket.io-client";
-import { Chat } from "../../common/types/Chat";
 import axios from "axios";
+import { serverApi } from "../../common/app/ApiPath";
+import { useChats } from "../../context/ChatsProvider";
 
 let socket: Socket;
 
-interface ChatWindowProps {
-    chat?: Chat;
-}
-
-const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
+const ChatWindow = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const { chat, setChat, chats, setChats } = useChats();  
+
+    useEffect(() => {
+        if (chat) {
+            setFirstName(chat.firstName);
+            setLastName(chat.lastName);
+        }
+    }, [chat]);
 
     useEffect(() => {
         socket = io("http://localhost:3000");
@@ -51,7 +58,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
     }, [chat]);
 
     const sendMessage = () => {
-        if (!chat) return;
+        if (!chat?._id) return;
         if(!inputValue.trim()) return;
 
         const message: Message = {
@@ -71,6 +78,19 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
         }
     }
 
+    const updateChat = async () => {
+        await axios.put(`${serverApi}/chats/${chat?._id}`, { firstName, lastName });
+    }
+
+    const removeChat = async () => {
+        const sure = confirm("Are you sure you want to delete this chat?");
+        if (sure) {
+            await axios.delete(`${serverApi}/chats/${chat?._id}`);
+            setChat(null);
+            setChats(chats.filter(ch => ch._id !== chat?._id))
+        }
+    }
+
     if (!chat) {
         return (
             <div className="chat-window placeholder">
@@ -78,12 +98,18 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat }) => {
             </div>
         );
     }
- 
+
     return (
         <div className="chat-window">
             <div className="chat-header">
-                <img src="*" alt="Avatar" />
-                <span>{chat?.firstName} {chat?.lastName}</span>
+                <div>
+                    <img src="*" alt="Avatar" />
+                    <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="chat__user__name"/>
+                    <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="chat__user__name" />
+                    <button onClick={updateChat}>Update</button>
+                </div>
+
+                <button className="chat__remove__button" onClick={removeChat}>Remove Chat</button>
             </div>
             <div className="messages">
                 {messages.map((message) => <MessageBubble key={message._id || message.chatId} text={message.text} time={message.time}/>)}
