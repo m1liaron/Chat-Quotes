@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Chat } from "../../common/types/Chat";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { ChatItem } from "../ChatItem/ChatItem";
 import "./SideBar.css";
 import { serverApi } from "../../common/app/ApiPath";
+import { useChats } from "../../context/ChatsProvider";
 
-interface SideBarProps {
-    setChat: (chat: Chat) => void
-}
-
-const SideBar: React.FC<SideBarProps> = ({ setChat }) => {
-    const [chats, setChats] = useState<Chat[]>([]);
+const SideBar: React.FC = () => {
+    const { setChat, chats, setChats } = useChats();
 
     useEffect(() => {
         const getChats = async () => {

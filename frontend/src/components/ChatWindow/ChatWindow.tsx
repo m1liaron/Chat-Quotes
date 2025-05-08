@@ -3,22 +3,18 @@ import "./ChatWindow.css";
 import { MessageBubble } from "../MessageBubble/MessageBubble";
 import { Message } from "../../common/types/Message";
 import { io, Socket } from "socket.io-client";
-import { Chat } from "../../common/types/Chat";
 import axios from "axios";
 import { serverApi } from "../../common/app/ApiPath";
+import { useChats } from "../../context/ChatsProvider";
 
 let socket: Socket;
 
-interface ChatWindowProps {
-    chat?: Chat | null;
-    setChat: (chat: Chat | null) => void
-}
-
-const ChatWindow: React.FC<ChatWindowProps> = ({ chat, setChat }) => {
+const ChatWindow = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const { chat, setChat, chats, setChats } = useChats();  
 
     useEffect(() => {
         if (chat) {
@@ -91,6 +87,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat, setChat }) => {
         if (sure) {
             await axios.delete(`${serverApi}/chats/${chat?._id}`);
             setChat(null);
+            setChats(chats.filter(ch => ch._id !== chat?._id))
         }
     }
 
