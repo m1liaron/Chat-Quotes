@@ -9,6 +9,7 @@ import { useChats } from "../../contexts/ChatsProvider";
 import { useUser } from "../../contexts/UserProvider";
 import NotificationSound from "../../assets/audio/notification.mp3";
 import { apiClient } from "../../api/apiClient";
+import { Chat } from "../../common/types/Chat";
 
 let socket: Socket;
 
@@ -62,8 +63,6 @@ const ChatWindow = () => {
             try {
                 const data = await apiClient.get<Message[]>(`${serverApi}/chats/${chat._id}/messages`);
                 setMessages(data);
-                // const res = await axios.get<Message[]>(`${serverApi}/chats/${chat._id}/messages`);
-                // setMessages(res.data);
             } catch (error) {
                  console.error("Error fetching messages:", error);
             }
@@ -95,17 +94,17 @@ const ChatWindow = () => {
     }
 
     const updateChat = async () => {
-        const response = await axios.put(`${serverApi}/chats/${chat?._id}`, { firstName, lastName });
+        const data: Chat = await apiClient.put<Chat>(`/chats/${chat?._id}`, { firstName, lastName });
         const updatedChats = [...chats];
         const updatedChatId = chats.findIndex(ch => ch._id === chat?._id);
-        updatedChats[updatedChatId] = response.data;
+        updatedChats[updatedChatId] = data;
         setChats(updatedChats)
     }
 
     const removeChat = async () => {
         const sure = confirm("Are you sure you want to delete this chat?");
         if (sure) {
-            await axios.delete(`${serverApi}/chats/${chat?._id}`);
+            await apiClient.delete<Chat>(`/chats/${chat?._id}`);
             setChat(null);
             setChats(chats.filter(ch => ch._id !== chat?._id))
         }

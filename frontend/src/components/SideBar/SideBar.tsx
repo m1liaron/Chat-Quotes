@@ -28,9 +28,9 @@ const SideBar: React.FC = () => {
             lastName: "User lastname",
             userId: user?._id
         }
-        const response = await axios.post(`${serverApi}/chats`, newChatData);
-        setChats(prev => [...prev, response.data]);
-        setChat(response.data);
+        const data: Chat = await apiClient.post<Chat>("/chats", newChatData);
+        setChats(prev => [...prev, data]);
+        setChat(data);
     }
 
     const handleLogout = () => {
