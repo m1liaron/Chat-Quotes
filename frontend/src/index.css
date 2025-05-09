@@ -138,6 +138,10 @@ body {
   background-color: #282b2c;
 }
 
+.message__icon {
+  width: 20px;
+}
+
 .message.left {
   align-self: flex-start;
 }

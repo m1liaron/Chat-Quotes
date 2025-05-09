@@ -6,6 +6,8 @@ import { serverApi } from "../../common/app/ApiPath";
 import { useChats } from "../../contexts/ChatsProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { googleLogout } from "@react-oauth/google";
+import { Chat } from "../../common/types/Chat";
+import { apiClient } from "../../api/apiClient";
 
 const SideBar: React.FC = () => {
     const { setChat, chats, setChats } = useChats();
@@ -13,8 +15,8 @@ const SideBar: React.FC = () => {
 
     useEffect(() => {
         const getChats = async () => {
-            const response = await axios.get(`${serverApi}/chats`);
-            setChats(response.data);
+            const data = await apiClient.get<Chat[]>("/chats");
+            setChats(data);
         }
         getChats();
     }, []);

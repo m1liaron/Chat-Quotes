@@ -8,6 +8,7 @@ import { serverApi } from "../../common/app/ApiPath";
 import { useChats } from "../../contexts/ChatsProvider";
 import { useUser } from "../../contexts/UserProvider";
 import NotificationSound from "../../assets/audio/notification.mp3";
+import { apiClient } from "../../api/apiClient";
 
 let socket: Socket;
 
@@ -59,8 +60,10 @@ const ChatWindow = () => {
         const fetchMessages = async () => {
             if (!chat?._id) return;
             try {
-                const res = await axios.get<Message[]>(`${serverApi}/chats/${chat._id}/messages`);
-                setMessages(res.data);
+                const data = await apiClient.get<Message[]>(`${serverApi}/chats/${chat._id}/messages`);
+                setMessages(data);
+                // const res = await axios.get<Message[]>(`${serverApi}/chats/${chat._id}/messages`);
+                // setMessages(res.data);
             } catch (error) {
                  console.error("Error fetching messages:", error);
             }
