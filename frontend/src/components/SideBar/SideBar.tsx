@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import axios from "axios";
 import { ChatItem } from "../ChatItem/ChatItem";
 import "./SideBar.css";
-import { serverApi } from "../../common/app/ApiPath";
 import { useChats } from "../../contexts/ChatsProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { googleLogout } from "@react-oauth/google";
+import { Chat } from "../../common/types/Chat";
+import { apiClient } from "../../api/apiClient";
 
 const SideBar: React.FC = () => {
     const { setChat, chats, setChats } = useChats();
@@ -13,8 +13,8 @@ const SideBar: React.FC = () => {
 
     useEffect(() => {
         const getChats = async () => {
-            const response = await axios.get(`${serverApi}/chats`);
-            setChats(response.data);
+            const data = await apiClient.get<Chat[]>("/chats");
+            setChats(data);
         }
         getChats();
     }, []);
@@ -26,9 +26,9 @@ const SideBar: React.FC = () => {
             lastName: "User lastname",
             userId: user?._id
         }
-        const response = await axios.post(`${serverApi}/chats`, newChatData);
-        setChats(prev => [...prev, response.data]);
-        setChat(response.data);
+        const data: Chat = await apiClient.post<Chat>("/chats", newChatData);
+        setChats(prev => [...prev, data]);
+        setChat(data);
     }
 
     const handleLogout = () => {

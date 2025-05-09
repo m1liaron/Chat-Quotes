@@ -3,11 +3,12 @@ import "./ChatWindow.css";
 import { MessageBubble } from "../MessageBubble/MessageBubble";
 import { Message } from "../../common/types/Message";
 import { io, Socket } from "socket.io-client";
-import axios from "axios";
 import { serverApi } from "../../common/app/ApiPath";
 import { useChats } from "../../contexts/ChatsProvider";
 import { useUser } from "../../contexts/UserProvider";
 import NotificationSound from "../../assets/audio/notification.mp3";
+import { apiClient } from "../../api/apiClient";
+import { Chat } from "../../common/types/Chat";
 
 let socket: Socket;
 
@@ -40,14 +41,17 @@ const ChatWindow = () => {
         socket.on("receiveMessage", (data: Message) => {
             console.log("Received message from server:", data);
             setMessages((prevMessages) => [...prevMessages, data]);
-            const audio = new Audio(NotificationSound);
 
-            audio.play();
-            Notification.requestPermission().then(permission => {
-                if(permission === "granted") {
-                    new Notification("New Message", { body: data.text })
-                }
-            })
+            if (data?.userId !== user?._id) {
+                const audio = new Audio(NotificationSound);
+
+                audio.play();
+                Notification.requestPermission().then(permission => {
+                    if(permission === "granted") {
+                        new Notification("New Message", { body: data.text })
+                    }
+                })
+            }
         });
 
           return () => {
@@ -59,8 +63,8 @@ const ChatWindow = () => {
         const fetchMessages = async () => {
             if (!chat?._id) return;
             try {
-                const res = await axios.get<Message[]>(`${serverApi}/chats/${chat._id}/messages`);
-                setMessages(res.data);
+                const data = await apiClient.get<Message[]>(`${serverApi}/chats/${chat._id}/messages`);
+                setMessages(data);
             } catch (error) {
                  console.error("Error fetching messages:", error);
             }
@@ -80,7 +84,6 @@ const ChatWindow = () => {
             userId: user?._id
         }
 
-        setMessages((prev) => [...prev, message]);
         socket.emit("sendMessage", message);
         setInputValue("");
     }
@@ -92,17 +95,17 @@ const ChatWindow = () => {
     }
 
     const updateChat = async () => {
-        const response = await axios.put(`${serverApi}/chats/${chat?._id}`, { firstName, lastName });
+        const data: Chat = await apiClient.put<Chat>(`/chats/${chat?._id}`, { firstName, lastName });
         const updatedChats = [...chats];
         const updatedChatId = chats.findIndex(ch => ch._id === chat?._id);
-        updatedChats[updatedChatId] = response.data;
+        updatedChats[updatedChatId] = data;
         setChats(updatedChats)
     }
 
     const removeChat = async () => {
         const sure = confirm("Are you sure you want to delete this chat?");
         if (sure) {
-            await axios.delete(`${serverApi}/chats/${chat?._id}`);
+            await apiClient.delete<Chat>(`/chats/${chat?._id}`);
             setChat(null);
             setChats(chats.filter(ch => ch._id !== chat?._id))
         }
@@ -129,7 +132,7 @@ const ChatWindow = () => {
                 <button className="chat__remove__button" onClick={removeChat}>Remove Chat</button>
             </div>
             <div className="messages">
-                {messages.map((message) => <MessageBubble key={message._id || message.chatId} text={message.text} time={message.time} left={message.userId !== user?._id} />)}
+                {messages.map((message) => <MessageBubble key={message._id || message.chatId} id={message._id || ""} text={message.text} time={message.time} left={message.userId !== user?._id} userId={message.userId || ""} />)}
             </div>
             <div className="chat-input">
                 <input

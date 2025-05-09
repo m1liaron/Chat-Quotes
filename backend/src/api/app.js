@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "https://chat-quotes.vercel.app",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   })
 );
 
@@ -39,10 +39,12 @@ io.on("connection", (socket) => {
   console.log("Client connected via Socket.IO:", socket.id)
   
   socket.on("sendMessage", async (message) => {
-    await Message.create({
+    const userMessage = await Message.create({
       ...message,
       userId: socket.user.userId
     });
+    socket.emit("receiveMessage", userMessage);
+
     const randomQuote = await getRandomQuote();
 
     const responseData = {
