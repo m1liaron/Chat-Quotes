@@ -22,7 +22,12 @@ const io = new Server(server, {
 
 dotenv.config();
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://chat-quotes.vercel.app",
+    methods: ["GET", "POST", "PUT", "PATCH"]
+  })
+);
 
 registerRoutes(app);
 
