@@ -28,7 +28,7 @@ const SideBar: React.FC = () => {
         }
         const response = await axios.post(`${serverApi}/chats`, newChatData);
         setChats(prev => [...prev, response.data]);
-        setChat(newChatData);
+        setChat(response.data);
     }
 
     const handleLogout = () => {
