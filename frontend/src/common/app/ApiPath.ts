@@ -1,4 +1,4 @@
 
-const serverApi = "http://localhost:3000";
+const serverApi = "http://chat-quotes-production.up.railway.app/";
 
 export { serverApi };
