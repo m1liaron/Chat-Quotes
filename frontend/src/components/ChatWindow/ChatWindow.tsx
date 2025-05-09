@@ -3,7 +3,6 @@ import "./ChatWindow.css";
 import { MessageBubble } from "../MessageBubble/MessageBubble";
 import { Message } from "../../common/types/Message";
 import { io, Socket } from "socket.io-client";
-import axios from "axios";
 import { serverApi } from "../../common/app/ApiPath";
 import { useChats } from "../../contexts/ChatsProvider";
 import { useUser } from "../../contexts/UserProvider";
@@ -42,14 +41,17 @@ const ChatWindow = () => {
         socket.on("receiveMessage", (data: Message) => {
             console.log("Received message from server:", data);
             setMessages((prevMessages) => [...prevMessages, data]);
-            const audio = new Audio(NotificationSound);
 
-            audio.play();
-            Notification.requestPermission().then(permission => {
-                if(permission === "granted") {
-                    new Notification("New Message", { body: data.text })
-                }
-            })
+            if (data?.userId !== user?._id) {
+                const audio = new Audio(NotificationSound);
+
+                audio.play();
+                Notification.requestPermission().then(permission => {
+                    if(permission === "granted") {
+                        new Notification("New Message", { body: data.text })
+                    }
+                })
+            }
         });
 
           return () => {
@@ -82,7 +84,6 @@ const ChatWindow = () => {
             userId: user?._id
         }
 
-        setMessages((prev) => [...prev, message]);
         socket.emit("sendMessage", message);
         setInputValue("");
     }
@@ -131,7 +132,7 @@ const ChatWindow = () => {
                 <button className="chat__remove__button" onClick={removeChat}>Remove Chat</button>
             </div>
             <div className="messages">
-                {messages.map((message) => <MessageBubble key={message._id || message.chatId} text={message.text} time={message.time} left={message.userId !== user?._id} />)}
+                {messages.map((message) => <MessageBubble key={message._id || message.chatId} id={message._id || ""} text={message.text} time={message.time} left={message.userId !== user?._id} userId={message.userId || ""} />)}
             </div>
             <div className="chat-input">
                 <input

@@ -16,6 +16,7 @@ const updateMessage = async (req, res) => {
               .json("Message not found");
             return;
         }
+        res.status(StatusCodes.OK).json(updatedMessage);
     } catch (error) {
         res
           .status(StatusCodes.INTERNAL_SERVER_ERROR)

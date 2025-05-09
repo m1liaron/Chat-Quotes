@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
-import axios from "axios";
 import { ChatItem } from "../ChatItem/ChatItem";
 import "./SideBar.css";
-import { serverApi } from "../../common/app/ApiPath";
 import { useChats } from "../../contexts/ChatsProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { googleLogout } from "@react-oauth/google";

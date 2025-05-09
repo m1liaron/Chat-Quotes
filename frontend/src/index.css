@@ -142,6 +142,10 @@ body {
   width: 20px;
 }
 
+.message__update__button {
+  font-size: 10px;
+}
+
 .message.left {
   align-self: flex-start;
 }

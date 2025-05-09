@@ -39,10 +39,12 @@ io.on("connection", (socket) => {
   console.log("Client connected via Socket.IO:", socket.id)
   
   socket.on("sendMessage", async (message) => {
-    await Message.create({
+    const userMessage = await Message.create({
       ...message,
       userId: socket.user.userId
     });
+    socket.emit("receiveMessage", userMessage);
+
     const randomQuote = await getRandomQuote();
 
     const responseData = {
